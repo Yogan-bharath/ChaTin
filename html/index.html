@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #messages{
+            /* border: 1px solid red; */
+            max-width: 30rem;
+        }
+        p{
+            /* border: 1px solid black; */
+            margin: 5px;
+        }
+        .left{
+            display: flex;
+            justify-content: flex-end;
+            flex-direction: column;
+            align-items: flex-end;
+            /* text-align: end; */
+        }
+        .right{
+            text-align: start;
+        }
+        .dark{
+            /* font-weight: 900; */
+             background-color: #D1D1D1;
+            color: #3D3D3D;
+            padding: .3rem;
+            width: fit-content;
+            border-radius: 7px;
+        }
+        .message{
+
+            display: flex;
+            /* justify-content: center; */
+            align-items: center;
+        }
+        .container{
+            margin: 30% auto;
+            background-color: #1E1E1E;
+            max-width: 30rem;
+            padding: 10px;
+            border-radius: 20px;
+        }
+        #input{
+            padding: .4rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.359);
+            outline: none;
+            width: 90%; 
+            font-size: 1rem;
+        }
+        #send{
+            font-size: 1rem;
+            width: 2.1rem;
+            height: 2.1rem;
+            border-radius:8px;
+            border: 1px solid rgba(0, 0, 0, 0.219) ;
+            background-color: #41CA82;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        h1{
+            color: #D1D1D1;
+        }
+        .mess{
+            color: #D1D1D1;
+            background-color: #3D3D3D;
+            padding: 1rem;
+            width: fit-content;
+            border-radius: calc(10px);
+        }
+        .message-container{
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="message-container">
+            <h1>ChaTin</h1>
+        <div id="messages">
+            
+         </div>
+        </div>
+
+        <div class="message">
+        <input type="text" placeholder="Enter a Message" id="input"/>
+        <button id="send">⬆</button>
+    </div>
+    </div>
+    
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let username = prompt("Enter your username : ")
+        while(!username){
+            username = prompt("Enter your username : ")
+        }
+        let socket = io()
+        const send = document.getElementById('send')
+        const input = document.getElementById('input')
+        const messages = document.getElementById('messages')
+        send.addEventListener('click',(e)=>{
+            socket.emit("user-message",{
+                username,
+                message:input.value
+            });
+        })
+         socket.on("message",(message)=>{
+            let p = document.createElement('p')
+            p.innerHTML = `<p class="dark">
+                ${username==message.username ? "Me":message.username} 
+                </p>
+            <p class="mess">${message.message}</p>`
+            p.className = username==message.username ? "left":"right";
+            messages.append(p);
+         })
+    </script>
+</body>
+</html>
